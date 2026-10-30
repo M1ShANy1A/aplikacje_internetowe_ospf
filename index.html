@@ -10,11 +10,146 @@
     <header>
         <h1>OSPF</h1>
         <p>Open Shortest Path First - strona edukacyjna</p>
+        <nav aria-label="Menu główne">
+            <ul>
+                <li><a href="#strona-glowna">Start</a></li>
+                <li><a href="#routing">Routing</a></li>
+                <li><a href="#ospf">OSPF</a></li>
+            </ul>
+        </nav>
     </header>
     <main>
-        <section>
-            <h2>Wprowadzenie</h2>
-            <p>To jest strona edykacyjna o protokole routingu OSPF (Open Shortest Path First).</p>
+        <section id="strona-glowna">
+            <h2>Strona główna</h2>
+            <p>To strona edukacyjna, na której wyjaśniono działanie protokołu OSPF (Open Shortest Path First) oraz sposób, w jaki routery automatycznie wyznaczają najlepsze trasy przesyłania pakietów w sieci komputerowej.</p>
+            <div class="card">
+                <h3>OSPF w skrócie</h3>
+                <ul>
+                    <li>jest protokołem routingu dynamicznego,</li>
+                    <li>należy do protokołów stanu łącza,</li>
+                    <li>jest otwartym standardem, więc działa na urządzeniach różnych producentów,</li>
+                    <li>najlepszą trasę wybiera na podstawie kosztu łącza,</li>
+                    <li>szybko reaguje na awarie i dobrze sprawdza się w średnich i dużych sieciach.</li>
+                </ul>
+            </div>
+        </section>
+        <section id="routing">
+            <h2>Routing</h2>
+            <p><strong>Routing</strong> (trasowanie) to wybieranie drogi, którą pakiet IP ma przejść z jednej sieci do drugiej. Robi to router, czyli urządzenie łączące różne sieci.</p>
+            <p>Router sprawdza adres docelowy pakietu i szuka go w swojej <strong>tablicy routingu</strong>. Gdy znajdzie pasującą trasę, wysyła pakiet do następnego routera (ang. <em>next hop</em>) przez odpowiedni interfejs.</p>
+            <div class="card">
+                <h3>Co zawiera tablica routingu?</h3>
+                <ul>
+                    <li>adres sieci docelowej wraz z maską,</li>
+                    <li>adres następnego routera lub interfejs wyjściowy,</li>
+                    <li>metrykę, czyli liczbę oceniającą, jak dobra jest trasa,</li>
+                    <li>źródło trasy, np. sieć podłączona bezpośrednio, trasa statyczna lub protokół dynamiczny.</li>
+                </ul>
+            </div>
+            <h3>Routing statyczny i dynamiczny</h3>
+            <div class="card-row">
+                <div class="card">
+                    <h3>Statyczny</h3>
+                    <p>Trasy wpisuje ręcznie administrator. Jest to proste, ale gdy łącze ulegnie awarii, router sam nie zmieni trasy. Dobrze sprawdza się w małych sieciach.</p>
+                </div>
+                <div class="card">
+                    <h3>Dynamiczny</h3>
+                    <p>Routery wymieniają informacje za pomocą protokołu routingu (np. RIP, EIGRP lub OSPF) i same aktualizują trasy. Jest to wygodne w większych sieciach.</p>
+                </div>
+            </div>
+            <h3>IGP i EGP</h3>
+            <p>Protokoły <strong>IGP</strong> działają wewnątrz jednej organizacji, czyli jednego systemu autonomicznego. Należą do nich OSPF, RIP i EIGRP. Protokoły <strong>EGP</strong>, np. BGP, łączą różne systemy autonomiczne, na przykład sieci różnych operatorów internetowych.</p>
+            <h3>Odległość administracyjna</h3>
+            <p>Router może poznać tę samą sieć z kilku źródeł. Wtedy wybiera źródło z mniejszą <strong>odległością administracyjną</strong> (AD). Poniżej znajdują się wartości domyślne w urządzeniach Cisco.</p>
+            <div class="table-wrapper">
+                <table>
+                    <tr>
+                        <th>Źródło trasy</th>
+                        <th>Odległość administracyjna</th>
+                    </tr>
+                    <tr>
+                        <td>Sieć podłączona bezpośrednio</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Trasa statyczna</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>EIGRP</td>
+                        <td>90</td>
+                    </tr>
+                    <tr>
+                        <td>OSPF</td>
+                        <td>110</td>
+                    </tr>
+                    <tr>
+                        <td>RIP</td>
+                        <td>120</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+        <section id="ospf">
+            <h2>OSPF</h2>
+            <p><strong>OSPF</strong> (Open Shortest Path First) to protokół routingu dynamicznego typu IGP. Opisuje go standard RFC 2328 (dla IPv4). Nazwa „Open” oznacza, że protokół jest otwartym standardem, a „Shortest Path First” – że do wyliczania tras używa algorytmu najkrótszej ścieżki Dijkstry (algorytm SPF).</p>
+            <h3>Protokół stanu łącza</h3>
+            <p>W protokołach wektora odległości (np. RIP) router wie głównie, ile „skoków” dzieli go od sieci. W OSPF każdy router opisuje swoje łącza i wysyła ten opis do pozostałych routerów. Dzięki temu wszystkie routery w obszarze mają taką samą „mapę” sieci i same wyliczają z niej trasy.</p>
+            <div class="card-row">
+                <div class="card">
+                    <h3>Zalety</h3>
+                    <ul>
+                        <li>szybka reakcja na zmiany w sieci,</li>
+                        <li>obsługa masek o różnej długości (VLSM),</li>
+                        <li>wybór trasy według kosztu, a nie samej liczby skoków,</li>
+                        <li>dobra skalowalność dzięki obszarom,</li>
+                        <li>otwarty standard.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Wady</h3>
+                    <ul>
+                        <li>trudniejsza konfiguracja niż w RIP,</li>
+                        <li>większe wymagania co do pamięci i procesora routera,</li>
+                        <li>wymaga przemyślanego podziału na obszary.</li>
+                    </ul>
+                </div>
+            </div>
+            <h3>Ważne pojęcia</h3>
+            <div class="table-wrapper">
+                <table>
+                    <tr>
+                        <th>Pojęcie</th>
+                        <th>Znaczenie</th>
+                    </tr>
+                    <tr>
+                        <td>Router ID</td>
+                        <td>32-bitowy identyfikator routera zapisywany jak adres IPv4, np. <code>1.1.1.1</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Sąsiad (neighbor)</td>
+                        <td>Router w tej samej sieci, z którym nawiązano relację OSPF.</td>
+                    </tr>
+                    <tr>
+                        <td>LSA</td>
+                        <td>Komunikat z informacją o łączach i sieciach (Link State Advertisement).</td>
+                    </tr>
+                    <tr>
+                        <td>LSDB</td>
+                        <td>Baza danych stanu łącza, czyli zbiór wszystkich otrzymanych LSA.</td>
+                    </tr>
+                    <tr>
+                        <td>SPF</td>
+                        <td>Algorytm, który z bazy LSDB wylicza najlepsze trasy.</td>
+                    </tr>
+                </table>
+            </div>
+            <h3>Dane techniczne</h3>
+            <ul>
+                <li>OSPF działa bezpośrednio na IP i używa numeru protokołu 89 (nie korzysta z TCP ani UDP),</li>
+                <li>wiadomości wysyła na adresy multicast <code>224.0.0.5</code> (wszystkie routery OSPF) i <code>224.0.0.6</code> (routery DR i BDR),</li>
+                <li>domyślna odległość administracyjna wynosi 110.</li>
+            </ul>
         </section>
     </main>
     <footer>
