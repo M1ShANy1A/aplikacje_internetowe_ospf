@@ -143,3 +143,107 @@ td {
     max-width: 100%;
     height: auto;
 }
+
+pre {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    padding: 12px;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+code {
+    font-family: Consolas, "Courier New", monospace;
+}
+
+p code {
+    background-color: #e8edf3;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 15px;
+}
+
+td code {
+    background-color: #e8edf3;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 15px;
+}
+
+li code {
+    background-color: #e8edf3;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 15px;
+}
+
+#back-to-top {
+    display: none;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+    color: #ffffff;
+    background-color: #1f4e79;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#back-to-top.visible {
+    display: block;
+}
+
+@media (max-width: 800px) {
+    body {
+        font-size: 16px;
+    }
+
+    header h1 {
+        font-size: 26px;
+    }
+
+    main {
+        padding: 12px;
+    }
+
+    section {
+        padding: 14px;
+    }
+
+    .card-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+}
+
+@media (max-width: 600px) {
+    nav ul {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    nav a {
+        text-align: center;
+    }
+
+    th {
+        padding: 6px;
+        font-size: 15px;
+    }
+
+    td {
+        padding: 6px;
+        font-size: 15px;
+    }
+
+    pre {
+        font-size: 14px;
+    }
+
+}

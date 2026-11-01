@@ -17,6 +17,7 @@
                 <li><a href="#ospf">OSPF</a></li>
                 <li><a href="#obszary">Obszary</a></li>
                 <li><a href="#wersje">v2 i v3</a></li>
+                <li><a href="#konfiguracja">Konfiguracja</a></li>
             </ul>
         </nav>
     </header>
@@ -245,10 +246,109 @@
                 <p>W OSPFv3 Router ID nadal ma 32 bity. Jeśli router nie ma żadnego adresu IPv4, trzeba ustawić go ręcznie.</p>
             </div>
         </section>
+        <section id="konfiguracja">
+            <h2>Przykładowa konfiguracja Cisco IOS</h2>
+            <p>Poniżej znajduje się przykładowa konfiguracja routera <strong>R1</strong>, który ma sieć LAN <code>192.168.1.0/24</code> oraz łącza do routerów R2 i R3 (łącze do R3 ma ręcznie ustawiony większy koszt). Wszystkie interfejsy należą do obszaru 0. Pozostałe routery konfiguruje się podobnie – zmieniają się tylko adresy i polecenia <code>network</code>.</p>
+            <pre><code>enable
+configure terminal
+hostname R1
+interface loopback 0
+ ip address 1.1.1.1 255.255.255.255
+ exit
+interface gigabitethernet 0/0
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+ exit
+interface gigabitethernet 0/1
+ ip address 10.0.12.1 255.255.255.252
+ no shutdown
+ exit
+interface gigabitethernet 0/2
+ ip address 10.0.13.1 255.255.255.252
+ ip ospf cost 100
+ no shutdown
+ exit
+router ospf 1
+ router-id 1.1.1.1
+ auto-cost reference-bandwidth 10000
+ network 192.168.1.0 0.0.0.255 area 0
+ network 10.0.12.0 0.0.0.3 area 0
+ network 10.0.13.0 0.0.0.3 area 0
+ passive-interface gigabitethernet 0/0
+ end
+copy running-config startup-config</code></pre>
+            <h3>Objaśnienie poleceń</h3>
+            <div class="table-wrapper">
+                <table>
+                    <tr>
+                        <th>Polecenie</th>
+                        <th>Znaczenie</th>
+                    </tr>
+                    <tr>
+                        <td><code>router ospf 1</code></td>
+                        <td>Uruchamia proces OSPF o lokalnym numerze 1. Numer ma znaczenie tylko na tym routerze.</td>
+                    </tr>
+                    <tr>
+                        <td><code>router-id 1.1.1.1</code></td>
+                        <td>Ustawia Router ID ręcznie.</td>
+                    </tr>
+                    <tr>
+                        <td><code>auto-cost reference-bandwidth 10000</code></td>
+                        <td>Ustawia przepustowość referencyjną na 10 000 Mb/s. Należy ustawić tę samą wartość na każdym routerze.</td>
+                    </tr>
+                    <tr>
+                        <td><code>network 10.0.12.0 0.0.0.3 area 0</code></td>
+                        <td>Włącza OSPF na interfejsach, których adres pasuje do podanej sieci. Używa się maski odwrotnej (wildcard), a sieć trafia do obszaru 0.</td>
+                    </tr>
+                    <tr>
+                        <td><code>passive-interface gigabitethernet 0/0</code></td>
+                        <td>Sieć LAN jest ogłaszana, ale przez ten interfejs nie są wysyłane pakiety Hello, bo nie ma tam innych routerów.</td>
+                    </tr>
+                    <tr>
+                        <td><code>ip ospf cost 100</code></td>
+                        <td>Ustawia ręcznie koszt interfejsu.</td>
+                    </tr>
+                    <tr>
+                        <td><code>copy running-config startup-config</code></td>
+                        <td>Zapisuje konfigurację, aby nie zniknęła po restarcie routera.</td>
+                    </tr>
+                </table>
+            </div>
+            <h3>Polecenia sprawdzające</h3>
+            <div class="table-wrapper">
+                <table>
+                    <tr>
+                        <th>Polecenie</th>
+                        <th>Co pokazuje</th>
+                    </tr>
+                    <tr>
+                        <td><code>show ip ospf neighbor</code></td>
+                        <td>Listę sąsiadów i ich stany (poprawny stan to FULL).</td>
+                    </tr>
+                    <tr>
+                        <td><code>show ip route ospf</code></td>
+                        <td>Trasy w tablicy routingu poznane przez OSPF (oznaczone literą O).</td>
+                    </tr>
+                    <tr>
+                        <td><code>show ip ospf interface brief</code></td>
+                        <td>Interfejsy z włączonym OSPF, ich obszar i koszt.</td>
+                    </tr>
+                    <tr>
+                        <td><code>show ip protocols</code></td>
+                        <td>Informacje o uruchomionych protokołach routingu, w tym Router ID.</td>
+                    </tr>
+                    <tr>
+                        <td><code>show ip ospf database</code></td>
+                        <td>Zawartość bazy LSDB.</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
     </main>
     <footer>
         <p>Strona edykacyjna</p>
     </footer>
+    <button id="back-to-top" type="button" aria-label="Wróć na górę strony">&uarr;</button>
     <script src="script.js"></script>
 </body>
 </html>
