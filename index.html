@@ -15,6 +15,8 @@
                 <li><a href="#strona-glowna">Start</a></li>
                 <li><a href="#routing">Routing</a></li>
                 <li><a href="#ospf">OSPF</a></li>
+                <li><a href="#obszary">Obszary</a></li>
+                <li><a href="#wersje">v2 i v3</a></li>
             </ul>
         </nav>
     </header>
@@ -150,6 +152,98 @@
                 <li>wiadomości wysyła na adresy multicast <code>224.0.0.5</code> (wszystkie routery OSPF) i <code>224.0.0.6</code> (routery DR i BDR),</li>
                 <li>domyślna odległość administracyjna wynosi 110.</li>
             </ul>
+        </section>
+        <section id="obszary">
+            <h2>Obszary OSPF</h2>
+            <p>W dużej sieci baza LSDB mogłaby być ogromna, a router często liczyłby trasy od nowa. Dlatego sieć dzieli się na <strong>obszary</strong> (ang. <em>areas</em>). Router zna szczegółowo tylko swój obszar, a o pozostałych dostaje skrócone informacje.</p>
+            <p>Obszar o numerze <strong>0</strong> to <strong>obszar szkieletowy</strong> (backbone). Każdy inny obszar musi być z nim połączony.</p>
+            <div class="diagram">
+                <img src="img/obszary-ospf.jpg" alt="Schemat OSPF: obszar 0 (backbone) z routerami R1, R2 (ASBR, połączony z Internetem), R3 i R4 (ABR) oraz obszary 1 (R5) i 2 (R6)">
+            </div>
+            <h3>Rodzaje routerów</h3>
+            <div class="table-wrapper">
+                <table>
+                    <tr>
+                        <th>Rodzaj</th>
+                        <th>Opis</th>
+                    </tr>
+                    <tr>
+                        <td>Router wewnętrzny</td>
+                        <td>Wszystkie jego interfejsy należą do jednego obszaru.</td>
+                    </tr>
+                    <tr>
+                        <td>Router szkieletowy</td>
+                        <td>Ma co najmniej jeden interfejs w obszarze 0.</td>
+                    </tr>
+                    <tr>
+                        <td>ABR</td>
+                        <td>Router graniczny obszarów (Area Border Router). Ma interfejsy w kilku obszarach i przekazuje informacje między nimi.</td>
+                    </tr>
+                    <tr>
+                        <td>ASBR</td>
+                        <td>Router graniczny systemu autonomicznego. Wprowadza do OSPF trasy z innego źródła, np. z innego protokołu routingu.</td>
+                    </tr>
+                </table>
+            </div>
+            <h3>Po co obszary?</h3>
+            <ul>
+                <li>mniejsza baza LSDB na każdym routerze,</li>
+                <li>rzadsze i szybsze obliczanie tras,</li>
+                <li>zmiany w jednym obszarze mniej obciążają resztę sieci,</li>
+                <li>możliwość łączenia adresów (sumaryzacji) na routerach ABR.</li>
+            </ul>
+            <p>Istnieją też obszary specjalne, np. <strong>stub</strong>, <strong>totally stubby</strong> i <strong>NSSA</strong>. Ograniczają one rodzaje informacji przesyłanych do obszaru, aby routery miały mniejsze tablice. Na początek wystarczy wiedzieć, że istnieją.</p>
+        </section>
+        <section id="wersje">
+            <h2>OSPFv2 i OSPFv3</h2>
+            <p><strong>OSPFv2</strong> służy do routingu IPv4. Dla sieci <strong>IPv6</strong> powstała nowa wersja – <strong>OSPFv3</strong> (RFC 5340). Obie działają według tych samych zasad: sąsiedzi, LSA, SPF i obszary.</p>
+            <div class="table-wrapper">
+                <table>
+                    <tr>
+                        <th>Cecha</th>
+                        <th>OSPFv2</th>
+                        <th>OSPFv3</th>
+                    </tr>
+                    <tr>
+                        <td>Obsługiwany protokół</td>
+                        <td>IPv4</td>
+                        <td>IPv6 (w nowszych wersjach także IPv4)</td>
+                    </tr>
+                    <tr>
+                        <td>Standard</td>
+                        <td>RFC 2328</td>
+                        <td>RFC 5340</td>
+                    </tr>
+                    <tr>
+                        <td>Adresy multicast</td>
+                        <td>224.0.0.5 i 224.0.0.6</td>
+                        <td>FF02::5 i FF02::6</td>
+                    </tr>
+                    <tr>
+                        <td>Adres źródłowy pakietów</td>
+                        <td>adres IPv4 interfejsu</td>
+                        <td>adres link-local interfejsu</td>
+                    </tr>
+                    <tr>
+                        <td>Włączanie na interfejsie</td>
+                        <td>polecenie <code>network</code> w procesie OSPF</td>
+                        <td>polecenie <code>ipv6 ospf</code> na interfejsie</td>
+                    </tr>
+                    <tr>
+                        <td>Uwierzytelnianie</td>
+                        <td>wbudowane w protokół</td>
+                        <td>przez IPsec</td>
+                    </tr>
+                    <tr>
+                        <td>Router ID</td>
+                        <td>32 bity</td>
+                        <td>32 bity (nadal zapisywany jak adres IPv4)</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="note">
+                <p>W OSPFv3 Router ID nadal ma 32 bity. Jeśli router nie ma żadnego adresu IPv4, trzeba ustawić go ręcznie.</p>
+            </div>
         </section>
     </main>
     <footer>

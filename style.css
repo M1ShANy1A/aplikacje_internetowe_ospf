@@ -125,3 +125,21 @@ td {
     padding: 8px;
     text-align: left;
 }
+
+.note {
+    border-left: 4px solid #2f6ca3;
+    background-color: #eef4fa;
+    padding: 8px 14px;
+    margin: 15px 0;
+}
+
+.diagram {
+    overflow-x: auto;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.diagram img {
+    max-width: 100%;
+    height: auto;
+}
